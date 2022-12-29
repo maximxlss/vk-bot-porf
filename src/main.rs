@@ -6,10 +6,10 @@ use lazy_static::lazy_static;
 use rand::prelude::*;
 
 
-const CONTEXT_SYMBOL_LIMIT: usize = 350;
+const CONTEXT_SYMBOL_LIMIT: usize = 500;
 const HELP_TEXT: &'static str = r#"
 Команды:
-- /p -- сгенерировать текст. Например: `/p он сказал`
+- /p -- сгенерировать текст (`_` в конце меняется на ` `). Например: `/p он сказал`
 - /c -- установить шанс случайных сообщений в процентах. Например: `/c 25`. По умолчанию: 10%.
 - /l -- установить длину дополнения в словах. Например: `/l 30`. По умолчанию: 60 слов.
 - /h -- вывести это сообщение.
@@ -71,9 +71,12 @@ async fn main() -> Result<!, rvk::error::Error> {
         if msg.text.starts_with("/p ") {
             set_typing(msg.peer_id).await;
             let mut prompt = msg.text[3..].to_string();
+            if prompt.ends_with("_") {
+                prompt.pop(); prompt.push(' ');
+            }
             let cur_len = { *LENGTH.lock() };
             if let Ok(ans) = porfirevich_get(&prompt, cur_len).await {
-                let res = msg.text[3..].to_string() + &ans;
+                let res = prompt + &ans;
                 msg.reply(&res).await;
             } else {
                 msg.reply("Ошибка!").await;
