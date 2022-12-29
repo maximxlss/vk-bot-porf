@@ -126,7 +126,7 @@ impl TextMessage {
 pub async fn porfirevich_get(prompt: &str, length: u32) -> Result<String, error::Error> {
     let mut body = String::with_capacity(prompt.len() + 50);
     body.push_str("{\"prompt\":\"");
-    body.push_str(prompt);
+    body.push_str(&prompt.replace("\\", "\\\\").replace("\"", "\\\""));
     body.push_str("\",\"length\":");
     body.push_str(&length.to_string());
     body.push_str("}");
