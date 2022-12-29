@@ -49,6 +49,13 @@ pub async fn get_user(user_id: i32) -> User {
     users[0].clone()
 }
 
+pub async fn get_this_id() -> i32 {
+    let mut params = Params::new();
+    params.insert("".to_string(), "".to_string());
+    let groups = rvk_methods::groups::get_by_id::<Vec<Value>>(&API_CLIENT, params).await.expect("failed to get group");
+    groups[0]["id"].as_i64().unwrap() as i32
+}
+
 pub async fn poll_for_messages<F, Fut>(callback: F) -> rvk::error::Result<!>
 where
     F: Fn(Message) -> Fut,

@@ -17,10 +17,16 @@ const HELP_TEXT: &'static str = r#"
 "#;
 
 
+const CHANCE_TO_ANSWER_MENTION: u32 = 100;
+const CHANCE_TO_ANSWER_NAME: u32 = 90;
+const CHANCE_TO_ANSWER_BOT: u32 = 75;
+
+
 lazy_static!{
     static ref LENGTH: Mutex<u32> = Mutex::new(60);
     static ref CHANCE: Mutex<u32> = Mutex::new(10);
     static ref LAST_AUTHOR_ID: Mutex<i32> = Mutex::new(-1);
+    static ref CUR_ID: Mutex<i32> = Mutex::new(-1);
     static ref MESSAGE_HISTORY: Mutex<String> = Mutex::new(String::new());
 }
 
@@ -34,6 +40,13 @@ fn add_string_to_history(s: &str) {
     while history.len() > CONTEXT_SYMBOL_LIMIT {
         history.remove(0);
     }
+}
+
+async fn get_cur_id() -> i32 {
+    if *CUR_ID.lock() == -1 {
+        *CUR_ID.lock() = get_this_id().await;
+    }
+    *CUR_ID.lock()
 }
 
 async fn add_msg_to_history(msg: &TextMessage) {
@@ -53,10 +66,9 @@ async fn rand_ans(msg: &TextMessage) {
     add_string_to_history("Порфирьевич:\n-");
     *LAST_AUTHOR_ID.lock() = -1;
     let context = get_history();
-    println!("{context}");
     if let Ok(ans) = porfirevich_get(&context, cur_length).await {
         msg.reply(&ans).await;
-        add_string_to_history(&ans);
+        add_string_to_history(&(ans + "\n"));
     } else {
         msg.reply("Ошибка!").await;
     }
@@ -109,7 +121,11 @@ async fn main() -> Result<!, rvk::error::Error> {
                 let mut rng = thread_rng();
                 rng.gen_range(1..=100)
             };
-            let cur_chance = *CHANCE.lock();
+            let cur_chance =
+                if msg.text.contains(&get_cur_id().await.to_string()) { CHANCE_TO_ANSWER_MENTION }
+                else if msg.text.to_lowercase().contains("порфирьевич") { CHANCE_TO_ANSWER_NAME }
+                else if msg.text.to_lowercase().contains("бот") { CHANCE_TO_ANSWER_BOT }
+                else { *CHANCE.lock() };
             if random_value <= cur_chance {
                 set_typing(msg.peer_id).await;
                 rand_ans(&msg).await;
