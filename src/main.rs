@@ -16,7 +16,7 @@ use rvk_objects::user::User;
 const CONTEXT_SYMBOL_LIMIT: usize = 350;
 const HELP_TEXT: &'static str = r#"
 Команды:
-- /p -- сгенерировать текст (например: /p он сказал)
+- /p -- сгенерировать текст. Например: `/p он сказал`
 - /c -- установить шанс случайных сообщений в процентах. Например: `/c 25`. По умолчанию: 10%.
 - /l -- установить длину дополнения в словах. Например: `/l 30`. По умолчанию: 60 слов.
 - /h -- вывести это сообщение.
@@ -27,7 +27,7 @@ const HELP_TEXT: &'static str = r#"
 lazy_static!{
     static ref API_CLIENT: APIClient = rvk_methods::supported_api_client(include_str!("token"));
     static ref LENGTH: Mutex<u32> = Mutex::new(60);
-    static ref CHANCE: Mutex<u32> = Mutex::new(100);
+    static ref CHANCE: Mutex<u32> = Mutex::new(10);
     static ref LAST_AUTHOR_ID: Mutex<i32> = Mutex::new(-1);
     static ref MESSAGE_HISTORY: Mutex<String> = Mutex::new(String::new());
 }
