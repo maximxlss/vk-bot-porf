@@ -1,5 +1,4 @@
 use std::fs::File;
-use std::io::{Seek, SeekFrom, Write};
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -27,7 +26,7 @@ impl Storage {
     }
 
     pub fn load() -> Self {
-        let mut file = File::open("storage.json").unwrap_or_else(|_| {
+        let file = File::open("storage.json").unwrap_or_else(|_| {
             Self::new().save();
             File::open("storage.json").unwrap()
         });
@@ -35,7 +34,7 @@ impl Storage {
     }
 
     pub fn save(&mut self) {
-        let mut file = File::options().write(true).open("storage.json").unwrap_or_else(|_| File::create("storage.json").unwrap());
+        let file = File::options().write(true).open("storage.json").unwrap_or_else(|_| File::create("storage.json").unwrap());
         serde_json::to_writer(file, self).unwrap();
     }
 
