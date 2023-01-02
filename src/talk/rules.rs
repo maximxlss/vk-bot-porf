@@ -11,7 +11,7 @@ pub(crate) async fn add_history(context: &mut String, msg: &mut TextMessage) -> 
 
 fn replace(s: &mut String, pat: &str, with: &str) {
     let mut offset = 0;
-    let mut occurrence = s[offset..].to_lowercase().find(pat);
+    let mut occurrence = s[0..].to_lowercase().find(pat);
     while occurrence.is_some() {
         let i = occurrence.unwrap();
         let there_is_a_letter_before = i > 0 && char_before(s, i).is_alphabetic();
@@ -20,7 +20,7 @@ fn replace(s: &mut String, pat: &str, with: &str) {
             s.insert_str(i, with);
         }
         offset = i + 1;
-        occurrence = s[offset..].to_lowercase().find(pat);
+        occurrence = s[s.ceil_char_boundary(offset)..].to_lowercase().find(pat);
     }
 }
 
