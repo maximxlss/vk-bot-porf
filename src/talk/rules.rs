@@ -44,7 +44,7 @@ pub(crate) async fn mention_answer(context: &mut String, msg: &mut TextMessage) 
     if msg.text.contains(&get_self_id().await.to_string()) {
         return true;
     }
-    msg.text.to_lowercase().find("порфирьевич").is_some() || msg.text.to_lowercase().find("бот").is_some()
+    msg.text.to_lowercase().find("порфирьевич").is_some()
 }
 
 pub(crate) async fn add_prompt(context: &mut String, msg: &mut TextMessage) -> bool {
