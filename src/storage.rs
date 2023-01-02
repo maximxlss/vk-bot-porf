@@ -34,7 +34,7 @@ impl Storage {
     }
 
     pub fn save(&mut self) {
-        let file = File::options().write(true).open("storage.json").unwrap_or_else(|_| File::create("storage.json").unwrap());
+        let file = File::options().write(true).truncate(true).open("storage.json").unwrap_or_else(|_| File::create("storage.json").unwrap());
         serde_json::to_writer(file, self).unwrap();
     }
 
