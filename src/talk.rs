@@ -12,7 +12,6 @@ pub(crate) async fn handle_talking(msg: &TextMessage) {
     will_answer |= rules::random_answers(&mut context, &mut msg).await;
     will_answer |= rules::mention_answer(&mut context, &mut msg).await;
     will_answer |= rules::add_prompt(&mut context, &mut msg).await;
-    println!("{:?}", will_answer);
     println!("{:?}", context);
     if will_answer {
         set_typing(msg.peer_id).await;

@@ -129,7 +129,7 @@ where
             let t = update["type"].as_str().ok_or(param_err!())?;
             if t == "message_new" {
                 let msg: Message = serde_json::from_value(update["object"]["message"].clone())?;
-                let Ok(msg): Result<TextMessage, &'static str> = msg.try_into() else { continue; };
+                let Ok(msg): Result<TextMessage, &'static str> = msg.clone().try_into() else { println!("{:?} - usupported message", msg); continue; };
                 add_msg_to_history(&msg).await;
                 tokio::spawn(callback(msg));
             } else {
