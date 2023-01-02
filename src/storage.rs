@@ -48,7 +48,7 @@ impl Storage {
     }
 
     pub fn get_length(&self) -> u32 {
-        self.chance
+        self.length
     }
 
     pub fn set_length(&mut self, value: u32) {
