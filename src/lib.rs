@@ -18,7 +18,7 @@ macro_rules! param_err {
     () => { rvk::error::Error::from("Failed to get a parameter") }
 }
 
-const CONTEXT_SYMBOL_LIMIT: usize = 500;
+const CONTEXT_SYMBOL_LIMIT: usize = 1000;
 
 lazy_static! {
     static ref REQWEST_CLIENT: reqwest::Client = reqwest::Client::new();
@@ -141,6 +141,7 @@ where
 }
 
 
+#[derive(Clone)]
 pub struct TextMessage {
     pub peer_id: i32,
     pub from_id: i32,
