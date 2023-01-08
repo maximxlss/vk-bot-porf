@@ -111,7 +111,7 @@ where
     Fut: Future<Output = ()> + Send + 'static,
 {
     let mut params = Params::new();
-    params.insert("group_id".to_string(), "217990903".to_string());
+    params.insert("group_id".to_string(), include_str!("group_id").to_string());
     let res = get_long_poll_server::<Params>(&API_CLIENT, params).await?;
     let server = res.get("server").ok_or(param_err!())?.clone();
     let key = res.get("key").ok_or(param_err!())?.clone();
